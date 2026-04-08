@@ -1,0 +1,13 @@
+# Dependencias
+node_modules/
+
+# Variables de entorno (Seguridad)
+.env
+
+# Docker data
+mysql_data/
+mongo_data/
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
