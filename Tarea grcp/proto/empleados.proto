@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package empleados;
+
+// Definicion del servicio con los 3 metodos
+service EmpleadoService {
+  rpc Crear (EmpleadoRequest) returns (EmpleadoResponse);
+  rpc Listar (Empty) returns (ListaEmpleados);
+  rpc Eliminar (EliminarRequest) returns (EmpleadoResponse);
+}
+
+// Datos para crear un empleado
+message EmpleadoRequest {
+  string nombres = 1;
+  string apellidos = 2;
+  string cargo = 3;
+}
+
+// Estructura de un empleado completo
+message Empleado {
+  int32 id = 1;
+  string nombres = 2;
+  string apellidos = 3;
+  string cargo = 4;
+}
+
+// Lista de empleados (para Listar)
+message ListaEmpleados {
+  repeated Empleado empleados = 1;
+}
+
+// Para eliminar solo se necesita el id
+message EliminarRequest {
+  int32 id = 1;
+}
+
+// Respuesta generica
+message EmpleadoResponse {
+  bool exito = 1;
+  string mensaje = 2;
+}
+
+// Mensaje vacio (para Listar que no necesita parametros)
+message Empty {}
