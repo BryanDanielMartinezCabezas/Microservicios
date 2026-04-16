@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: api-libros
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - MONGO_URI=mongodb://mongo:27017/librosdb
+    depends_on:
+      - mongo
+    networks:
+      - libros-network
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo-libros
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - libros-network
+    restart: unless-stopped
+
+volumes:
+  mongo-data:
+
+networks:
+  libros-network:
+    driver: bridge
