@@ -1,0 +1,39 @@
+services:
+  app:
+    build: .
+    container_name: api-trabajadores
+    ports:
+      - "4000:4000"
+      
+
+
+
+    environment:
+      - PUERTO=4000
+      - MONGO_URI=mongodb://mongo:27017/trabajadoresdb
+
+    depends_on:
+      - mongo
+    networks:
+      - trabajadores-network
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo-trabajadores
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - trabajadores-network
+    restart: unless-stopped
+
+
+
+volumes:
+  mongo-data:
+
+networks:
+  trabajadores-network:
+    driver: bridge

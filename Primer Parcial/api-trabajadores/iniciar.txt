@@ -1,0 +1,20 @@
+
+Abrir Docker Desktop y esperar que esté corriendo
+
+Abrir terminal en esta carpeta y ejecutar:
+   docker-compose up -d
+
+
+
+
+SI ALGO FALLA
+
+
+Ver logs del contenedor:
+   docker logs api-trabajadores
+
+Reiniciar todo:
+   docker-compose down
+   docker-compose up -d
+
+

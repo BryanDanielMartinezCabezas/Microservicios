@@ -1,0 +1,57 @@
+mutation {
+  crearTrabajador(input: {
+    nombre: "Juan"
+    apellido: "Perez"
+    cedula: "7559063"
+    cargo: "Desarrollador"
+    departamento: "Tecnologia"
+    fechaIngreso: "2024-01-15"
+  }) {
+    id
+    nombre
+    apellido
+    cedula
+    cargo
+    departamento
+    fechaIngreso
+  }
+}
+
+query {
+  obtenerTrabajadores {
+    id
+    nombre
+    apellido
+    cedula
+    cargo
+    departamento
+    fechaIngreso
+  }
+}
+
+query {
+  obtenerTrabajador(id: "1") {
+    id
+    nombre
+    apellido
+    cedula
+    cargo
+    departamento
+    fechaIngreso
+  }
+}
+
+mutation {
+  actualizarTrabajador(id: "1", input: {
+    cargo: "Nuevo Cargo"
+  }) {
+    id
+    nombre
+    apellido
+    cargo
+  }
+}
+
+mutation {
+  eliminarTrabajador(id: "1")
+}
