@@ -1,0 +1,16 @@
+[package]
+name = "graphql-empleados"
+version = "0.1.0"
+edition = "2021"
+
+# async-graphql      → librería GraphQL para Rust (equivalente a express-graphql / @apollo/server)
+# async-graphql-axum → integración de async-graphql con axum
+# reqwest            → cliente HTTP para llamar al REST API (equivalente a fetch/axios)
+
+[dependencies]
+async-graphql = "7"
+async-graphql-axum = "7"
+axum = "0.8"
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1", features = ["derive"] }
+reqwest = { version = "0.12", features = ["json"] }

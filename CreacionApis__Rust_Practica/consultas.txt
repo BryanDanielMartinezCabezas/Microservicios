@@ -1,0 +1,132 @@
+========================================================
+  PRÁCTICA: APIs con Rust — Empleados
+  REST (puerto 8080) + GraphQL (puerto 8081)
+========================================================
+
+INICIAR LOS SERVICIOS
+─────────────────────
+Abrir DOS terminales en la carpeta CreacionApis__Rust_Practica/
+
+Terminal 1 — REST API:
+  cargo run -p rest-empleados
+
+Terminal 2 — GraphQL API (esperar a que el REST esté corriendo):
+  cargo run -p graphql-empleados
+
+NOTA: La primera vez tarda varios minutos compilando dependencias.
+      Las siguientes veces es mucho más rápido.
+
+
+SWAGGER UI (REST)
+─────────────────
+Abrir en el navegador:
+  http://localhost:8080/swagger-ui
+
+Desde ahí se pueden probar todos los endpoints visualmente.
+
+
+GRAPHQL PLAYGROUND
+──────────────────
+Abrir en el navegador:
+  http://localhost:8081/
+  (el endpoint de las queries es http://localhost:8081/graphql)
+
+
+========================================================
+  QUERIES Y MUTATIONS GRAPHQL
+  (copiar y pegar en el playground)
+========================================================
+
+── CREAR EMPLEADO ──────────────────────────────────────
+mutation {
+  crearEmpleado(input: {
+    nombre: "Juan"
+    apellido: "Perez"
+    cedula: "7559063"
+    cargo: "Desarrollador"
+    departamento: "Tecnologia"
+    fechaIngreso: "2024-01-15"
+  }) {
+    id
+    nombre
+    apellido
+    cedula
+    cargo
+    departamento
+    fechaIngreso
+  }
+}
+
+── LISTAR TODOS ────────────────────────────────────────
+query {
+  empleados {
+    id
+    nombre
+    apellido
+    cedula
+    cargo
+    departamento
+    fechaIngreso
+  }
+}
+
+── OBTENER UNO POR ID ──────────────────────────────────
+(reemplazar el ID con uno real obtenido al crear)
+query {
+  empleado(id: "PEGAR-ID-AQUI") {
+    id
+    nombre
+    apellido
+    cargo
+    departamento
+  }
+}
+
+── ACTUALIZAR (campos opcionales) ──────────────────────
+mutation {
+  actualizarEmpleado(
+    id: "PEGAR-ID-AQUI"
+    input: {
+      cargo: "Senior Developer"
+      departamento: "Ingenieria"
+    }
+  ) {
+    id
+    nombre
+    cargo
+    departamento
+  }
+}
+
+── ELIMINAR ────────────────────────────────────────────
+mutation {
+  eliminarEmpleado(id: "PEGAR-ID-AQUI")
+}
+
+
+========================================================
+  ENDPOINTS REST (para probar con curl o Swagger)
+========================================================
+
+GET    http://localhost:8080/empleados
+POST   http://localhost:8080/empleados
+GET    http://localhost:8080/empleados/:id
+PUT    http://localhost:8080/empleados/:id
+DELETE http://localhost:8080/empleados/:id
+
+Ejemplo con curl:
+  curl -X POST http://localhost:8080/empleados \
+    -H "Content-Type: application/json" \
+    -d '{"nombre":"Ana","apellido":"Garcia","cedula":"1234567","cargo":"Analista","departamento":"Sistemas","fecha_ingreso":"2025-01-10"}'
+
+
+========================================================
+  NOTA IMPORTANTE — camelCase vs snake_case
+========================================================
+En GraphQL los campos se usan en camelCase:
+  fechaIngreso  (no fecha_ingreso)
+
+En REST (JSON directo) se usan en snake_case:
+  fecha_ingreso
+
+Esto es automático — Rust convierte entre los dos formatos.
