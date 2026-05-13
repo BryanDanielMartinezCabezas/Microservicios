@@ -1,0 +1,9 @@
+stream
+    |from()
+        .measurement('errorCount')
+    |alert()
+        .id('errorCount_alert')
+        .message('ALERTA: errorCount={{ index .Fields "value" }} supera el umbral de 3')
+        .warn(lambda: "value" > 3)
+        .stateChangesOnly()
+        .log('/var/log/kapacitor/alerts.log')

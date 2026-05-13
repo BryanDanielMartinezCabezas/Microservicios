@@ -1,0 +1,97 @@
+services:
+  influxdb:
+    image: influxdb:1.8
+    ports:
+      - "8086:8086"
+    volumes:
+      - influx-data:/var/lib/influxdb
+    networks:
+      - ticks-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8086/ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  telegraf:
+    image: telegraf:1.25
+    volumes:
+      - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+    ports:
+      - "8080:8080"
+    networks:
+      - ticks-net
+    depends_on:
+      influxdb:
+        condition: service_healthy
+      microservicio:
+        condition: service_started
+
+  chronograf:
+    image: chronograf:1.10
+    ports:
+      - "8888:8888"
+    environment:
+      - INFLUXDB_URL=http://influxdb:8086
+      - KAPACITOR_URL=http://kapacitor:9092
+    volumes:
+      - chronograf-data:/var/lib/chronograf
+    networks:
+      - ticks-net
+    depends_on:
+      influxdb:
+        condition: service_healthy
+      kapacitor:
+        condition: service_healthy
+
+  kapacitor:
+    image: kapacitor:1.6
+    ports:
+      - "9092:9092"
+    environment:
+      - KAPACITOR_HOSTNAME=kapacitor
+      - KAPACITOR_INFLUXDB_0_URLS_0=http://influxdb:8086
+    volumes:
+      - kapacitor-data:/var/lib/kapacitor
+      - ./kapacitor/kapacitor.conf:/etc/kapacitor/kapacitor.conf:ro
+    networks:
+      - ticks-net
+    depends_on:
+      influxdb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9092/kapacitor/v1/ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  kapacitor-init:
+    image: kapacitor:1.6
+    volumes:
+      - ./kapacitor/init.sh:/scripts/init.sh:ro
+      - ./kapacitor/errorCount_alert.tick:/scripts/errorCount_alert.tick:ro
+    entrypoint: ["/bin/sh", "/scripts/init.sh"]
+    networks:
+      - ticks-net
+    depends_on:
+      kapacitor:
+        condition: service_healthy
+    restart: "no"
+
+  microservicio:
+    build: ./microservicio
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
+    networks:
+      - ticks-net
+
+networks:
+  ticks-net:
+    driver: bridge
+
+volumes:
+  influx-data:
+  chronograf-data:
+  kapacitor-data:
